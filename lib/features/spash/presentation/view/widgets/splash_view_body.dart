@@ -24,8 +24,8 @@ class _SplashViewBodyState extends State<SplashViewBody> {
     return GestureDetector(
       onTap: () {
         isFirstTime
-            ? GoRouter.of(context).push(AppRouter.kIntroView)
-            : GoRouter.of(context).push(AppRouter.kHomeView);
+            ? GoRouter.of(context).go(AppRouter.kIntroView)
+            : GoRouter.of(context).go(AppRouter.kHomeView);
       },
       child: Scaffold(
         backgroundColor: Color(0xff141411),
@@ -79,12 +79,12 @@ class _SplashViewBodyState extends State<SplashViewBody> {
 
   void navigationToIntroView() {
     if (isFirstTime) {
-      Future.delayed(Duration(seconds: 3), () {
-        GoRouter.of(context).push(AppRouter.kIntroView);
+      Future.delayed(Duration(seconds: 2), () {
+        GoRouter.of(context).go(AppRouter.kIntroView);
       });
     } else {
-      Future.delayed(Duration(seconds: 3), () {
-        GoRouter.of(context).push(AppRouter.kHomeView);
+      Future.delayed(Duration(seconds: 2), () {
+        GoRouter.of(context).go(AppRouter.kHomeView);
       });
     }
   }
