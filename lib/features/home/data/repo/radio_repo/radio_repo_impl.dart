@@ -3,6 +3,7 @@ import 'package:islam/core/errors/failure.dart';
 import 'package:islam/features/home/data/models/radio_model/reciter_model.dart';
 import 'package:islam/features/home/data/repo/radio_repo/radio_repo.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:quran/quran.dart' as quran;
 
 import '../../models/radio_model/radio_model.dart';
@@ -12,7 +13,7 @@ class RadioRepoImpl implements RadioRepo {
   String? lastUrl;
   int currentIndex = 0;
   List<RadioModel> allSurahs = [];
-  
+
   @override
   final List<ReciterModel> reciters = [
     ReciterModel(name: "محمد اللحيدان", serverUrl: "https://server8.mp3quran.net/lhdan/"),
@@ -24,7 +25,6 @@ class RadioRepoImpl implements RadioRepo {
     ReciterModel(name: "سعود الشريم", serverUrl: "https://server7.mp3quran.net/shur/"),
     ReciterModel(name: "ناصر القطامي", serverUrl: "https://server6.mp3quran.net/qtm/"),
     ReciterModel(name: "رعد محمد الكردي", serverUrl: "https://server6.mp3quran.net/kurdi/"),
-
   ];
 
   int selectedReciterIndex = 0;
@@ -49,12 +49,21 @@ class RadioRepoImpl implements RadioRepo {
   Future<Either<Failures, void>> playSura(int index) async {
     try {
       String url = allSurahs[index].getRadioUrl(reciters[selectedReciterIndex].serverUrl.trim());
-      if(lastUrl !=url){
-      await audioPlayer.setUrl(url);
-      lastUrl=url;}
+      if (lastUrl != url) {
+        await audioPlayer.setAudioSource(
+          AudioSource.uri(
+            Uri.parse(url),
+            tag: MediaItem(
+              id: url,
+              album: reciters[selectedReciterIndex].name,
+              title: "سورة ${allSurahs[index].suraName}",
+            ),
+          ),
+        );
+        lastUrl = url;
+      }
       audioPlayer.play();
-      currentIndex=index;
-
+      currentIndex = index;
 
       return right(null);
     } catch (e) {
@@ -69,7 +78,10 @@ class RadioRepoImpl implements RadioRepo {
 
   @override
   void changeReciter(int index) {
-    selectedReciterIndex = index;
+    if (selectedReciterIndex != index) {
+      selectedReciterIndex = index;
+      lastUrl = null;
+    }
   }
 
   @override

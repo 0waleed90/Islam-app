@@ -102,7 +102,7 @@ class _TimePageState extends State<TimePage> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 10),
+
                                 Row(
                                   mainAxisAlignment: .spaceAround,
                                   children: [
