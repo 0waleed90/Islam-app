@@ -13,12 +13,14 @@ import 'package:islam/features/home/presentation/manger/hadith_cubit/hadith_cubi
 import 'package:islam/features/home/presentation/manger/tasbih_cubit/tasbih_cubit.dart';
 import 'package:islam/features/home/presentation/manger/radio_cubit/radio_cubit.dart';
 import 'package:islam/features/home/presentation/manger/time_cubit/time_cubit.dart';
+import 'package:islam/features/home/presentation/view/widgets/time_view/athan_notification_service.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 import 'features/home/presentation/manger/quran_cubit/quran_cubit.dart';
 bool isFirstTime =true;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AthanNotificationService.init();
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.example.islam.channel.audio',
     androidNotificationChannelName: "Islam App Radio",

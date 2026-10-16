@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:islam/core/constants.dart';
 import 'package:islam/core/util/styles.dart';
 import 'package:islam/core/util/widgets/logo_image.dart';
+import 'package:islam/features/home/presentation/view/widgets/time_view/athan_settings_dialog.dart';
 import 'package:islam/features/home/presentation/view/widgets/time_view/athan_time_list_view_item.dart';
 import 'package:islam/features/home/presentation/view/widgets/time_view/athkar_grid_view_item.dart';
 import 'package:islam/features/home/presentation/view/widgets/time_view/custom_history_widget.dart';
@@ -39,6 +41,9 @@ class _TimePageState extends State<TimePage> {
 
   @override
   Widget build(BuildContext context) {
+    var settingsBox = Hive.box('settings');
+    bool isAthanEnabled = settingsBox.get('isAthanEnabled', defaultValue: true);
+
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -50,35 +55,35 @@ class _TimePageState extends State<TimePage> {
             var diff = nextTime!.difference(DateTime.now());
 
             return Stack(
-              alignment: .center,
+              alignment: Alignment.center,
               children: [
                 Image.asset('assets/photos/time_Background.png'),
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      SizedBox(height: 20),
-                      LogoImage(),
+                      const SizedBox(height: 20),
+                      const LogoImage(),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Stack(
-                          alignment: .topCenter,
+                          alignment: Alignment.topCenter,
                           children: [
                             Container(
-                              decoration: BoxDecoration(
-                                borderRadius: .only(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(30),
                                   topRight: Radius.circular(30),
                                 ),
                                 color: Color(0xff856B3F),
                               ),
-                              width: 390,
+                              width: double.infinity,
                               height: 100,
                             ),
                             Image.asset('assets/photos/Group 10 (2).png'),
                             Column(
                               children: [
-                                CustomHistoryWidget(),
-                                SizedBox(height: 30),
+                                const CustomHistoryWidget(),
+                                const SizedBox(height: 30),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 10,
@@ -103,28 +108,43 @@ class _TimePageState extends State<TimePage> {
                                   ),
                                 ),
 
-                                Row(
-                                  mainAxisAlignment: .spaceAround,
-                                  children: [
-                                    Text(
-                                      "الأذان القادم بعد ${diff.inHours}:${diff.inMinutes % 60}",
-                                      style: Styles.textStyle16.copyWith(
-                                        color: Colors.black,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          alignment: Alignment.centerRight,
+                                          child: Text(
+                                            "الأذان القادم بعد ${diff.inHours.abs().toString().padLeft(2, '0')}:${(diff.inMinutes.remainder(60)).abs().toString().padLeft(2, '0')}",
+                                            style: Styles.textStyle16.copyWith(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        Icons.volume_off,
-                                        color: Colors.black,
+                                      IconButton(
+                                        onPressed: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (context) => const AthanSettingsDialog(),
+                                          );
+                                          setState(() {});
+                                        },
+                                        icon: Icon(
+                                          isAthanEnabled ? Icons.volume_up : Icons.volume_off,
+                                          color: isAthanEnabled ? Colors.green[800] : Colors.black,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 40),
+                                const SizedBox(height: 40),
                                 Align(
-                                  alignment: .xy(-0.9, 1),
+                                  alignment: const Alignment(-0.9, 1),
                                   child: Text(
                                     'أذكار',
                                     style: Styles.textStyle16.copyWith(
@@ -137,9 +157,9 @@ class _TimePageState extends State<TimePage> {
                                   padding: const EdgeInsets.symmetric(),
                                   child: GridView.builder(
                                     shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
                                           mainAxisSpacing: 10,
                                           crossAxisSpacing: 10,
                                           crossAxisCount: 2,
@@ -150,7 +170,7 @@ class _TimePageState extends State<TimePage> {
                                     itemCount: 5,
                                   ),
                                 ),
-                                SizedBox(height: 20),
+                                const SizedBox(height: 20),
                               ],
                             ),
                           ],
@@ -164,22 +184,22 @@ class _TimePageState extends State<TimePage> {
           } else if (state is TimeFailure) {
             return Center(
               child: Column(
-                mainAxisAlignment: .center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.wifi_off, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
+                  const Icon(Icons.wifi_off, size: 64, color: Colors.grey),
+                  const SizedBox(height: 16),
 
                   Text(
                     state.errorMessage,
                     style: Styles.textStyle20,
-                    textAlign: .center,
+                    textAlign: TextAlign.center,
                   ),
 
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Container(
                     height: 30,
                     width: 300,
-                    decoration: BoxDecoration(color: Colors.white),
+                    decoration: const BoxDecoration(color: Colors.white),
                     child: ElevatedButton(
                       onPressed: () {
                         context.read<TimeCubit>().getPrayerTimes();
@@ -193,7 +213,7 @@ class _TimePageState extends State<TimePage> {
           } else {
             return Scaffold(
               backgroundColor: kPrimaryColor,
-              body: Center(child: CircularProgressIndicator()),
+              body: const Center(child: CircularProgressIndicator()),
             );
           }
         },

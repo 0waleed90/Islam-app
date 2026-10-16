@@ -1,4 +1,5 @@
 import java.io.FileInputStream
+import java.io.File
 import java.util.Properties
 
 plugins {
@@ -40,7 +41,13 @@ android {
             if (keystorePropertiesFile.exists()) {
                 keyAlias = keystoreProperties["keyAlias"] as String
                 keyPassword = keystoreProperties["keyPassword"] as String
-                storeFile = file(keystoreProperties["storeFile"] as String)
+                val keystorePath = keystoreProperties["storeFile"] as String
+                val storeFileObj = File(keystorePath)
+                storeFile = if (storeFileObj.isAbsolute) {
+                    storeFileObj
+                } else {
+                    rootProject.file(keystorePath)
+                }
                 storePassword = keystoreProperties["storePassword"] as String
             }
         }
