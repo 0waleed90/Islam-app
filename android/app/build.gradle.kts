@@ -55,6 +55,14 @@ android {
             }
         }
     }
+
+    // تسمية ملف الـ APK المخرج تلقائياً باسم التطبيق ورقم الإصدار
+    applicationVariants.all {
+        outputs.all {
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            output.outputFileName = "Islam-App-v${defaultConfig.versionName}.apk"
+        }
+    }
 }
 
 flutter {
