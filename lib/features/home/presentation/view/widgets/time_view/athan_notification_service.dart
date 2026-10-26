@@ -1,4 +1,5 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -23,6 +24,32 @@ class AthanNotificationService {
     await _flutterLocalNotificationsPlugin.initialize(
       settings: initializationSettings,
     );
+
+    // إنشاء قناة الإشعارات الخاصة بالأذان مع تخصيص صوت الأذان ومجرى الإنذار (Alarm Audio Stream)
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'athan_channel_id',
+      'قناة الأذان',
+      description: 'تنبيهات وأذان الصلوات الخمس',
+      importance: Importance.max,
+      playSound: true,
+      sound: RawResourceAndroidNotificationSound('athan'),
+      audioAttributesUsage: AudioAttributesUsage.alarm,
+    );
+
+    final AndroidFlutterLocalNotificationsPlugin? androidPlugin =
+        _flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>();
+
+    if (androidPlugin != null) {
+      await androidPlugin.createNotificationChannel(channel);
+      await androidPlugin.requestNotificationsPermission();
+      await androidPlugin.requestExactAlarmsPermission();
+    }
+
+    // طلب صلاحيات الإشعارات لأندرويد 13+ عبر permission_handler
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
+    }
   }
 
   static Future<void> scheduleAthanNotification({
@@ -42,6 +69,7 @@ class AthanNotificationService {
       priority: Priority.high,
       sound: RawResourceAndroidNotificationSound('athan'),
       playSound: true,
+      audioAttributesUsage: AudioAttributesUsage.alarm,
       fullScreenIntent: true,
     );
 

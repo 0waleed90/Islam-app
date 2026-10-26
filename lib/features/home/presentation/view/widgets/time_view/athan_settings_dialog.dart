@@ -109,12 +109,12 @@ class _AthanSettingsDialogState extends State<AthanSettingsDialog> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  isAthanEnabled ? 'تفعيل الأذان' : 'إلغاء التفعيل',
+                  isAthanEnabled ?  'إلغاء التفعيل':'تفعيل الأذان' ,
                   style: Styles.textStyle16,
                 ),
                 Switch.adaptive(
                   value: isAthanEnabled,
-                  activeColor: kPrimaryColor,
+                  activeThumbColor: kPrimaryColor,
                   onChanged: _toggleAthan,
                 ),
               ],

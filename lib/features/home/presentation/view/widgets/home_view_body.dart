@@ -30,50 +30,68 @@ class _HomeViewBodyState extends State<HomeViewBody> {
     const HadithPage(),
     const TasbihPage(),
     const RadioPage(),
-
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        backgroundColor: kPrimaryColor,
-        onDestinationSelected: onItemTaped,
-        indicatorColor: Color(0xff6F5F45),
-        destinations: [
-          NavigationDestination(
-            selectedIcon: Icon(Icons.analytics, color: Colors.white),
-            icon: Icon(Icons.analytics, color: Colors.black),
-            label: 'الوقت',
-          ),
-          NavigationDestination(
-            selectedIcon: FaIcon(
-              FontAwesomeIcons.bookQuran,
-              color: Colors.white,
-            ),
-            icon: FaIcon(FontAwesomeIcons.bookQuran, color: Colors.black),
-            label: 'القرءان',
-          ),
-          NavigationDestination(
-            selectedIcon: FaIcon(
-              FontAwesomeIcons.bookOpen,
-              color: Colors.white,
-            ),
-            icon: FaIcon(FontAwesomeIcons.bookOpen, color: Colors.black),
-            label: 'الاحاديث',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(OpenmojiIcons.prayer_beads, color: Colors.white),
-            icon: Icon(OpenmojiIcons.prayer_beads, color: Colors.black),
-            label: 'أذكار',
-          ),
-          NavigationDestination(
-            selectedIcon: Icon(Icons.radio, color: Colors.white),
-            icon: Icon(Icons.radio, color: Colors.black),
-            label: 'الاستماع',
-          ),
 
-        ],
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              );
+            }
+            return const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontSize: 12,
+            );
+          }),
+        ),
+        child: NavigationBar(
+          selectedIndex: selectedIndex,
+          backgroundColor: kPrimaryColor,
+          onDestinationSelected: onItemTaped,
+          indicatorColor: const Color(0xff6F5F45),
+          destinations: const [
+            NavigationDestination(
+              selectedIcon: Icon(Icons.analytics, color: Colors.white),
+              icon: Icon(Icons.analytics, color: Colors.black),
+              label: 'الوقت',
+            ),
+            NavigationDestination(
+              selectedIcon: FaIcon(
+                FontAwesomeIcons.bookQuran,
+                color: Colors.white,
+              ),
+              icon: FaIcon(FontAwesomeIcons.bookQuran, color: Colors.black),
+              label: 'القرءان',
+            ),
+            NavigationDestination(
+              selectedIcon: FaIcon(
+                FontAwesomeIcons.bookOpen,
+                color: Colors.white,
+              ),
+              icon: FaIcon(FontAwesomeIcons.bookOpen, color: Colors.black),
+              label: 'الاحاديث',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(OpenmojiIcons.prayer_beads, color: Colors.white),
+              icon: Icon(OpenmojiIcons.prayer_beads, color: Colors.black),
+              label: 'أذكار',
+            ),
+            NavigationDestination(
+              selectedIcon: Icon(Icons.radio, color: Colors.white),
+              icon: Icon(Icons.radio, color: Colors.black),
+              label: 'الاستماع',
+            ),
+          ],
+        ),
       ),
       body: _pages[selectedIndex],
     );

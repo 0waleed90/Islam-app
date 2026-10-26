@@ -63,7 +63,24 @@ class Islam extends StatelessWidget {
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,
-        theme: ThemeData.dark(),
+        theme: ThemeData.dark().copyWith(
+          navigationBarTheme: NavigationBarThemeData(
+            labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+              if (states.contains(WidgetState.selected)) {
+                return const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                );
+              }
+              return const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.normal,
+                fontSize: 12,
+              );
+            }),
+          ),
+        ),
         debugShowCheckedModeBanner: false,
       ),
     );
